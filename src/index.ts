@@ -1,21 +1,21 @@
-import {MongoClient, Db} from 'mongodb'
+import {MongoClient} from 'mongodb'
 import {ConnectionParamsRaw, ConnectionParamsUrl} from "./interfaces";
 import {Errors} from "./errors";
 
 export class MongoCopyField {
-    private mongoClient
-    private mongoDB
-    public dbName
+    private mongoClient: MongoClient | undefined
+    private mongoDB: any
+    public dbName: any
 
-    private constructor(mongoClient: MongoClient) {
-        this.mongoClient = mongoClient
-        this.mongoDB = this.mongoClient.db()
-        this.dbName = this.mongoDB.databaseName
+    private constructor(mClient: MongoClient) {
+        this.mongoClient = mClient
+        this.mongoDB = mClient.db()
+        this.dbName = mClient.isConnected()
     }
 
-    public async connect(params: ConnectionParamsUrl | ConnectionParamsRaw): Promise<MongoCopyField> {
-        if (!(this.validate(params))) throw Error(Errors.InvalidConnectionParams)
-        const connectionUrl = this.constructConnectionUrl(params)
+    static async connect(params: ConnectionParamsUrl | ConnectionParamsRaw) {
+        if (!(MongoCopyField.validate(params))) throw Error(Errors.InvalidConnectionParams)
+        const connectionUrl = MongoCopyField.constructConnectionUrl(params)
 
         const mClient = await MongoClient.connect(connectionUrl, {
             poolSize: 5,
@@ -26,7 +26,7 @@ export class MongoCopyField {
         return new MongoCopyField(mClient)
     }
 
-    private constructConnectionUrl(params: ConnectionParamsUrl | ConnectionParamsRaw): string {
+    private static constructConnectionUrl(params: ConnectionParamsUrl | ConnectionParamsRaw): string {
         if ('url' in params) return params.url
 
         let connDBStr = 'mongodb://'
@@ -48,7 +48,7 @@ export class MongoCopyField {
         return connDBStr
     }
 
-    private validate(params: ConnectionParamsUrl | ConnectionParamsRaw): boolean {
+    private static validate(params: ConnectionParamsUrl | ConnectionParamsRaw): boolean {
         if ('url' in params) return true
 
         if (
