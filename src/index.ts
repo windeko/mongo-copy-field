@@ -29,7 +29,7 @@ export class MongoCopyField {
     async copyValues(collection: string, oldField: string, newField: string, deleteOldField: boolean = false) {
         try {
             const selector = {[oldField]: {$exists: true}}
-            const operations: Array<any> = [
+            const operations: Object[] = [
                 {$set: {[newField]: `$${oldField}`}}
             ]
             if (deleteOldField) {
