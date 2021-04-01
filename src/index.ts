@@ -7,17 +7,23 @@ export class MongoCopyField {
     private mongoDB
     public dbName
 
-    constructor(params: ConnectionParamsUrl | ConnectionParamsRaw) {
+    private constructor(mongoClient: MongoClient) {
+        this.mongoClient = mongoClient
+        this.mongoDB = this.mongoClient.db()
+        this.dbName = this.mongoDB.databaseName
+    }
+
+    public async connect(params: ConnectionParamsUrl | ConnectionParamsRaw): Promise<MongoCopyField> {
         if (!(this.validate(params))) throw Error(Errors.InvalidConnectionParams)
         const connectionUrl = this.constructConnectionUrl(params)
 
-        this.mongoClient = new MongoClient(connectionUrl, {
+        const mClient = await MongoClient.connect(connectionUrl, {
             poolSize: 5,
             useUnifiedTopology: true,
             useNewUrlParser: true
         })
-        this.mongoDB = this.mongoClient.db()
-        this.dbName = this.mongoDB.databaseName
+
+        return new MongoCopyField(mClient)
     }
 
     private constructConnectionUrl(params: ConnectionParamsUrl | ConnectionParamsRaw): string {
