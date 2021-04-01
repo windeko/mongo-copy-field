@@ -26,6 +26,22 @@ export class MongoCopyField {
         return new MongoCopyField(mClient)
     }
 
+    async copyValues(collection: string, oldField: string, newField: string, deleteOldField: boolean = false) {
+        try {
+            const selector = {[oldField]: {$exists: true}}
+            const operations: Array<any> = [
+                {$set: {[newField]: `$${oldField}`}}
+            ]
+            if (deleteOldField) {
+                operations.push({$unset: [`${oldField}`]})
+            }
+
+            return await this.mongoDB.collection(collection).updateMany(selector, operations)
+        } catch (e) {
+            throw e
+        }
+    }
+
     private static constructConnectionUrl(params: ConnectionParamsUrl | ConnectionParamsRaw): string {
         if ('url' in params) return params.url
 
