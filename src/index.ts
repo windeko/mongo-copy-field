@@ -5,6 +5,7 @@ import {Errors} from "./errors";
 export class MongoCopyField {
     private mongoClient
     private mongoDB
+    public dbName
 
     constructor(params: ConnectionParamsUrl | ConnectionParamsRaw) {
         if (!(this.validate(params))) throw Error(Errors.InvalidConnectionParams)
@@ -16,7 +17,7 @@ export class MongoCopyField {
             useNewUrlParser: true
         })
         this.mongoDB = this.mongoClient.db()
-        console.log(`Connected to DB [${this.mongoDB.databaseName}]`);
+        this.dbName = this.mongoDB.databaseName
     }
 
     private constructConnectionUrl(params: ConnectionParamsUrl | ConnectionParamsRaw): string {
