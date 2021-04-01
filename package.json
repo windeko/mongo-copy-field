@@ -1,6 +1,6 @@
 {
   "name": "mongo-copy-field",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "You need this package in case you have new and legacy field (like summ and sum) and want to copy its content to the new field and remove legacy field",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
