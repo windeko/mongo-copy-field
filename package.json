@@ -2,9 +2,13 @@
   "name": "mongo-copy-field",
   "version": "1.0.0",
   "description": "You need this package in case you have new and legacy field (like summ and sum) and want to copy its content to the new field and remove legacy field",
-  "main": "index.js",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "lint": "tslint -p tsconfig.json"
   },
   "repository": {
     "type": "git",
@@ -22,5 +26,15 @@
   "bugs": {
     "url": "https://github.com/windeko/mongo-copy-field/issues"
   },
-  "homepage": "https://github.com/windeko/mongo-copy-field#readme"
+  "homepage": "https://github.com/windeko/mongo-copy-field#readme",
+  "dependencies": {
+    "@types/mongodb": "^3.6.11",
+    "mongodb": "^3.6.5"
+  },
+  "devDependencies": {
+    "prettier": "^2.2.1",
+    "tslint": "^6.1.3",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^4.2.3"
+  }
 }
