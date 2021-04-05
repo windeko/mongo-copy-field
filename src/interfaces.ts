@@ -10,3 +10,9 @@ export interface ConnectionParamsRaw {
     password?: string,
     authSource?: string,
 }
+
+export interface CopyValuesResult {
+    matchedCount: number,
+    modifiedCount: number,
+    upsertedCount: number,
+}

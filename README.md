@@ -70,3 +70,12 @@ For example, you could copy data from 0-level to some information object:
 ```javascript
 mc.copyValues('comments', 'authorId', 'author._id', true)
 ```
+
+### Response
+
+copyValues now returns result
+
+```javascript
+const res = mc.copyValues('comments', 'authorId', 'author._id', true)
+// { matchedCount: 8658, modifiedCount: 8658, upsertedCount: 0 }
+```

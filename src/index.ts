@@ -1,16 +1,14 @@
 import {MongoClient} from 'mongodb'
-import {ConnectionParamsRaw, ConnectionParamsUrl} from "./interfaces";
+import {ConnectionParamsRaw, ConnectionParamsUrl, CopyValuesResult} from "./interfaces";
 import {Errors} from "./errors";
 
 export class MongoCopyField {
     private mongoClient: MongoClient | undefined
     private mongoDB: any
-    public dbName: any
 
     private constructor(mClient: MongoClient) {
         this.mongoClient = mClient
         this.mongoDB = mClient.db()
-        this.dbName = mClient.isConnected()
     }
 
     static async connect(params: ConnectionParamsUrl | ConnectionParamsRaw) {
@@ -26,7 +24,7 @@ export class MongoCopyField {
         return new MongoCopyField(mClient)
     }
 
-    async copyValues(collection: string, oldField: string, newField: string, deleteOldField: boolean = false) {
+    async copyValues(collection: string, oldField: string, newField: string, deleteOldField: boolean = false): Promise<CopyValuesResult> {
         try {
             const selector = {[oldField]: {$exists: true}}
             const operations: object[] = [
@@ -36,7 +34,13 @@ export class MongoCopyField {
                 operations.push({$unset: [`${oldField}`]})
             }
 
-            return await this.mongoDB.collection(collection).updateMany(selector, operations)
+            const updResult = await this.mongoDB.collection(collection).updateMany(selector, operations)
+
+            return {
+                matchedCount: updResult.matchedCount,
+                modifiedCount: updResult.modifiedCount,
+                upsertedCount: updResult.upsertedCount,
+            }
         } catch (e) {
             throw e
         }
